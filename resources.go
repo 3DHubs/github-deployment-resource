@@ -50,25 +50,29 @@ type OutResponse struct {
 }
 
 type OutParams struct {
-	Type        *string `json:"type"`
-	ID          *string
-	Ref         *string
-	Environment *string
-	Task        *string
-	State       *string
-	Description *string
-	AutoMerge   *bool
-	Payload     *map[string]interface{}
-	PayloadPath *string `json:"payload_path"`
+	Type           *string `json:"type"`
+	ID             *string
+	Ref            *string
+	Environment    *string
+	Task           *string
+	State          *string
+	Description    *string
+	AutoMerge      *bool
+	Payload        *map[string]interface{}
+	PayloadPath    *string `json:"payload_path"`
+	LogURL         *string
+	EnvironmentURL *string
 
-	RawID          json.RawMessage `json:"id"`
-	RawState       json.RawMessage `json:"state"`
-	RawRef         json.RawMessage `json:"ref"`
-	RawTask        json.RawMessage `json:"task"`
-	RawEnvironment json.RawMessage `json:"environment"`
-	RawDescription json.RawMessage `json:"description"`
-	RawAutoMerge   json.RawMessage `json:"auto_merge"`
-	RawPayload     json.RawMessage `json:"payload"`
+	RawID             json.RawMessage `json:"id"`
+	RawState          json.RawMessage `json:"state"`
+	RawRef            json.RawMessage `json:"ref"`
+	RawTask           json.RawMessage `json:"task"`
+	RawEnvironment    json.RawMessage `json:"environment"`
+	RawDescription    json.RawMessage `json:"description"`
+	RawAutoMerge      json.RawMessage `json:"auto_merge"`
+	RawPayload        json.RawMessage `json:"payload"`
+	RawLogURL         json.RawMessage `json:"log_url"`
+	RawEnvironmentURL json.RawMessage `json:"environment_url"`
 }
 
 // Used to avoid recursion in UnmarshalJSON below.
@@ -103,6 +107,14 @@ func (p *OutParams) UnmarshalJSON(b []byte) (err error) {
 
 		if p.RawDescription != nil {
 			p.Description = github.String(getStringOrStringFromFile(p.RawDescription))
+		}
+
+		if p.RawLogURL != nil {
+			p.LogURL = github.String(getStringOrStringFromFile(p.RawLogURL))
+		}
+
+		if p.RawEnvironmentURL != nil {
+			p.EnvironmentURL = github.String(getStringOrStringFromFile(p.RawEnvironmentURL))
 		}
 
 		var payload map[string]interface{}
