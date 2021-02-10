@@ -46,6 +46,12 @@ func (c *InCommand) Run(destDir string, request InRequest) (InResponse, error) {
 		return InResponse{}, err
 	}
 
+	statusPath := filepath.Join(destDir, "status")
+	err = ioutil.WriteFile(statusPath, []byte(request.Version.LastStatus), 0644)
+	if err != nil {
+		return InResponse{}, err
+	}
+
 	refPath := filepath.Join(destDir, "ref")
 	err = ioutil.WriteFile(refPath, []byte(*deployment.Ref), 0644)
 	if err != nil {
@@ -83,29 +89,29 @@ func (c *InCommand) Run(destDir string, request InRequest) (InResponse, error) {
 	}
 
 	// Save the whole deployment too I guess.
-	deploymentPath := filepath.Join(destDir, "deploymentJSON")
+	deploymentPath := filepath.Join(destDir, "deployment.json")
 	deploymentJSON, _ := json.Marshal(deployment)
 	err = ioutil.WriteFile(deploymentPath, deploymentJSON, 0644)
 	if err != nil {
 		return InResponse{}, err
 	}
 
-	fmt.Fprintln(c.writer, "getting deployment statuses list")
-	statuses, err := c.github.ListDeploymentStatuses(*deployment.ID)
+	statuses, err := c.github.ListDeploymentStatuses(id)
 	if err != nil {
 		return InResponse{}, err
 	}
 
-	latestStatus := ""
-	if len(statuses) > 0 {
-		latestStatus = *statuses[0].State
+	// Save all the metadata why not.
+	metadata := metadataFromDeployment(deployment, statuses)
+	metadataPath := filepath.Join(destDir, "metadata.json")
+	metadataJSON, _ := json.Marshal(metadata)
+	err = ioutil.WriteFile(metadataPath, metadataJSON, 0644)
+	if err != nil {
+		return InResponse{}, err
 	}
 
 	return InResponse{
-		Version: Version{
-			ID:         strconv.FormatInt(*deployment.ID, 10),
-			LastStatus: latestStatus,
-		},
-		Metadata: metadataFromDeployment(deployment, statuses),
+		Version:  request.Version,
+		Metadata: metadata,
 	}, nil
 }
