@@ -103,8 +103,8 @@ func (c *InCommand) Run(destDir string, request InRequest) (InResponse, error) {
 
 	return InResponse{
 		Version: Version{
-			ID:       strconv.FormatInt(*deployment.ID, 10),
-			Statuses: latestStatus,
+			ID:         strconv.FormatInt(*deployment.ID, 10),
+			LastStatus: latestStatus,
 		},
 		Metadata: metadataFromDeployment(deployment, statuses),
 	}, nil

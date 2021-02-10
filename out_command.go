@@ -67,8 +67,8 @@ func (c *OutCommand) Run(sourceDir string, request OutRequest) (OutResponse, err
 
 	return OutResponse{
 		Version: Version{
-			ID:       *request.Params.ID,
-			Statuses: latestStatus,
+			ID:         *request.Params.ID,
+			LastStatus: latestStatus,
 		},
 		Metadata: metadataFromDeployment(deployment, statuses),
 	}, nil

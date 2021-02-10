@@ -19,6 +19,13 @@ func newDeployment(id int64) *github.Deployment {
 	}
 }
 
+func newDeploymentStatus(id int64, state string) *github.DeploymentStatus {
+	return &github.DeploymentStatus{
+		ID:    github.Int64(id),
+		State: github.String(state),
+	}
+}
+
 func newDeploymentWithEnvironment(id int64, env string) *github.Deployment {
 	return &github.Deployment{
 		ID:          github.Int64(id),

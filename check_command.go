@@ -44,9 +44,20 @@ func (c *CheckCommand) Run(request CheckRequest) ([]Version, error) {
 		}
 
 		id := *deployment.ID
+		statuses, err := c.github.ListDeploymentStatuses(id)
+		if err != nil {
+			return []Version{}, err
+		}
+
+		// Assume first returned status is the latest one
+		latestStatus := ""
+		if len(statuses) > 0 {
+			latestStatus = *statuses[0].State
+		}
+
 		lastID, err := strconv.ParseInt(request.Version.ID, 10, 64)
 		if err != nil || id >= lastID {
-			latestVersions = append(latestVersions, Version{ID: strconv.FormatInt(id, 10)})
+			latestVersions = append(latestVersions, Version{ID: strconv.FormatInt(id, 10), LastStatus: latestStatus})
 		}
 	}
 

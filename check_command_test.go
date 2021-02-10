@@ -132,7 +132,41 @@ var _ = Describe("Check Command", func() {
 				}))
 			})
 		})
+	})
 
+	Context("when deployments have statuses", func() {
+		BeforeEach(func() {
+			returnedDeployments = []*github.Deployment{
+				newDeployment(3),
+				newDeployment(2),
+				newDeployment(1),
+			}
+			returnedDeploymentStatuses = []*github.DeploymentStatus{
+				newDeploymentStatus(3, "success"),
+				newDeploymentStatus(2, "pending"),
+				newDeploymentStatus(1, "inactive"),
+			}
+		})
+
+		It("sets latest status", func() {
+			versions, err := command.Run(resource.CheckRequest{
+				Version: resource.Version{
+					ID: "2",
+				},
+			})
+
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(versions).Should(HaveLen(2))
+
+			Ω(versions[0]).Should(Equal(resource.Version{
+				ID:         "2",
+				LastStatus: "success",
+			}))
+			Ω(versions[1]).Should(Equal(resource.Version{
+				ID:         "3",
+				LastStatus: "success",
+			}))
+		})
 	})
 
 	Context("when environment provided to filter on", func() {
