@@ -31,8 +31,7 @@ func (c *DeploymentOutCommand) Run(sourceDir string, request OutRequest) (OutRes
 	}
 
 	newDeployment := &github.DeploymentRequest{
-		Ref:              request.Params.Ref,
-		RequiredContexts: &[]string{},
+		Ref: request.Params.Ref,
 	}
 
 	concoursePayload := map[string]interface{}{
@@ -68,6 +67,9 @@ func (c *DeploymentOutCommand) Run(sourceDir string, request OutRequest) (OutRes
 	}
 	if request.Params.AutoMerge != nil {
 		newDeployment.AutoMerge = request.Params.AutoMerge
+	}
+	if request.Params.RequiredContexts != nil {
+		newDeployment.RequiredContexts = request.Params.RequiredContexts
 	}
 
 	fmt.Fprintln(c.writer, "creating deployment")

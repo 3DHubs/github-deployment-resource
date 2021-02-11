@@ -50,18 +50,19 @@ type OutResponse struct {
 }
 
 type OutParams struct {
-	Type           *string `json:"type"`
-	ID             *string
-	Ref            *string
-	Environment    *string
-	Task           *string
-	State          *string
-	Description    *string
-	AutoMerge      *bool
-	Payload        *map[string]interface{}
-	PayloadPath    *string `json:"payload_path"`
-	LogURL         *string
-	EnvironmentURL *string
+	Type             *string `json:"type"`
+	ID               *string
+	Ref              *string
+	Environment      *string
+	Task             *string
+	State            *string
+	Description      *string
+	AutoMerge        *bool
+	Payload          *map[string]interface{}
+	PayloadPath      *string `json:"payload_path"`
+	LogURL           *string
+	EnvironmentURL   *string
+	RequiredContexts *[]string `json:"required_contexts,omitempty"`
 
 	RawID             json.RawMessage `json:"id"`
 	RawState          json.RawMessage `json:"state"`
