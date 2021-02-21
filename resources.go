@@ -12,7 +12,6 @@ import (
 )
 
 type Source struct {
-	User         string   `json:"user"`
 	Repository   string   `json:"repository"`
 	AccessToken  string   `json:"access_token"`
 	GitHubAPIURL string   `json:"github_api_url"`

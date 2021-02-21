@@ -2,8 +2,10 @@ package resource
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -43,10 +45,17 @@ func NewGitHubClient(source Source) (*GitHubClient, error) {
 		}
 	}
 
+	tokens := strings.SplitN(source.Repository, "/", 2)
+	if len(tokens) < 2 {
+		return nil, fmt.Errorf("%s is not a full repository name", source.Repository)
+	}
+	user := tokens[0]
+	repo := tokens[1]
+
 	return &GitHubClient{
 		client:     client,
-		user:       source.User,
-		repository: source.Repository,
+		user:       user,
+		repository: repo,
 	}, nil
 }
 
