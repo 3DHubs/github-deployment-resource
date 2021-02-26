@@ -59,7 +59,6 @@ type OutParams struct {
 	AutoMerge        *bool `json:"auto_merge,omitempty"`
 	Payload          *map[string]interface{}
 	PayloadPath      *string `json:"payload_path"`
-	LogURL           *string
 	EnvironmentURL   *string
 	RequiredContexts *[]string `json:"required_contexts,omitempty"`
 
@@ -70,7 +69,6 @@ type OutParams struct {
 	RawEnvironment    json.RawMessage `json:"environment"`
 	RawDescription    json.RawMessage `json:"description"`
 	RawPayload        json.RawMessage `json:"payload"`
-	RawLogURL         json.RawMessage `json:"log_url"`
 	RawEnvironmentURL json.RawMessage `json:"environment_url"`
 }
 
@@ -106,10 +104,6 @@ func (p *OutParams) UnmarshalJSON(b []byte) (err error) {
 
 		if p.RawDescription != nil {
 			p.Description = github.String(getStringOrStringFromFile(p.RawDescription))
-		}
-
-		if p.RawLogURL != nil {
-			p.LogURL = github.String(getStringOrStringFromFile(p.RawLogURL))
 		}
 
 		if p.RawEnvironmentURL != nil {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 
@@ -41,11 +42,19 @@ func (c *OutCommand) Run(sourceDir string, request OutRequest) (OutResponse, err
 		return OutResponse{}, err
 	}
 
+	logURL := fmt.Sprintf("%s/teams/%s/pipelines/%s/jobs/%s/builds/%s",
+		os.Getenv("ATC_EXTERNAL_URL"),
+		os.Getenv("BUILD_TEAM_NAME"),
+		os.Getenv("BUILD_PIPELINE_NAME"),
+		os.Getenv("BUILD_JOB_NAME"),
+		os.Getenv("BUILD_NAME"),
+	)
+
 	newStatus := &github.DeploymentStatusRequest{
 		State:          request.Params.State,
 		Description:    request.Params.Description,
-		LogURL:         request.Params.LogURL,
 		EnvironmentURL: request.Params.EnvironmentURL,
+		LogURL:         github.String(logURL),
 	}
 
 	fmt.Fprintln(c.writer, "creating deployment status")
