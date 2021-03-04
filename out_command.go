@@ -70,14 +70,17 @@ func (c *OutCommand) Run(sourceDir string, request OutRequest) (OutResponse, err
 	}
 
 	latestStatus := ""
+	latestStatusID := ""
 	if len(statuses) > 0 {
 		latestStatus = *statuses[0].State
+		latestStatusID = strconv.FormatInt(*statuses[0].ID, 10)
 	}
 
 	return OutResponse{
 		Version: Version{
 			ID:         *request.Params.ID,
 			LastStatus: latestStatus,
+			StatusID:   latestStatusID,
 		},
 		Metadata: metadataFromDeployment(deployment, statuses),
 	}, nil

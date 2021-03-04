@@ -132,14 +132,49 @@ var _ = Describe("Check Command", func() {
 				}))
 			})
 		})
+
+		Context("when deployments have statuses", func() {
+			BeforeEach(func() {
+				returnedDeployments = []*github.Deployment{
+					newDeployment(3),
+					newDeployment(2),
+					newDeployment(1),
+				}
+				returnedDeploymentStatuses = []*github.DeploymentStatus{
+					newDeploymentStatus(3, "success"),
+					newDeploymentStatus(2, "pending"),
+					newDeploymentStatus(1, "inactive"),
+				}
+			})
+
+			It("sets latest status", func() {
+				versions, err := command.Run(resource.CheckRequest{
+					Version: resource.Version{
+						ID: "2",
+					},
+				})
+
+				Ω(err).ShouldNot(HaveOccurred())
+				Ω(versions).Should(HaveLen(2))
+
+				Ω(versions[0]).Should(Equal(resource.Version{
+					ID:         "2",
+					LastStatus: "success",
+					StatusID:   "3",
+				}))
+				Ω(versions[1]).Should(Equal(resource.Version{
+					ID:         "3",
+					LastStatus: "success",
+					StatusID:   "3",
+				}))
+			})
+		})
 	})
 
-	Context("when deployments have statuses", func() {
+	Context("when one deployment has multiple statuses", func() {
 		BeforeEach(func() {
 			returnedDeployments = []*github.Deployment{
-				newDeployment(3),
-				newDeployment(2),
-				newDeployment(1),
+				newDeployment(4),
 			}
 			returnedDeploymentStatuses = []*github.DeploymentStatus{
 				newDeploymentStatus(3, "success"),
@@ -148,23 +183,39 @@ var _ = Describe("Check Command", func() {
 			}
 		})
 
-		It("sets latest status", func() {
+		It("fetches latest status if version has no status", func() {
 			versions, err := command.Run(resource.CheckRequest{
 				Version: resource.Version{
-					ID: "2",
+					ID: "4",
 				},
 			})
 
 			Ω(err).ShouldNot(HaveOccurred())
-			Ω(versions).Should(HaveLen(2))
+			Ω(versions).Should(HaveLen(1))
 
 			Ω(versions[0]).Should(Equal(resource.Version{
-				ID:         "2",
+				ID:         "4",
 				LastStatus: "success",
+				StatusID:   "3",
 			}))
-			Ω(versions[1]).Should(Equal(resource.Version{
-				ID:         "3",
+		})
+
+		It("fetches latest status if version has status", func() {
+			versions, err := command.Run(resource.CheckRequest{
+				Version: resource.Version{
+					ID:         "4",
+					LastStatus: "inactive",
+					StatusID:   "1",
+				},
+			})
+
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(versions).Should(HaveLen(1))
+
+			Ω(versions[0]).Should(Equal(resource.Version{
+				ID:         "4",
 				LastStatus: "success",
+				StatusID:   "3",
 			}))
 		})
 	})

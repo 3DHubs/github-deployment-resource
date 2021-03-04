@@ -51,13 +51,19 @@ func (c *CheckCommand) Run(request CheckRequest) ([]Version, error) {
 
 		// Assume first returned status is the latest one
 		latestStatus := ""
+		latestStatusID := ""
 		if len(statuses) > 0 {
 			latestStatus = *statuses[0].State
+			latestStatusID = strconv.FormatInt(*statuses[0].ID, 10)
 		}
 
 		lastID, err := strconv.ParseInt(request.Version.ID, 10, 64)
 		if err != nil || id >= lastID {
-			latestVersions = append(latestVersions, Version{ID: strconv.FormatInt(id, 10), LastStatus: latestStatus})
+			latestVersions = append(latestVersions, Version{
+				ID:         strconv.FormatInt(id, 10),
+				LastStatus: latestStatus,
+				StatusID:   latestStatusID,
+			})
 		}
 	}
 
@@ -68,6 +74,11 @@ func (c *CheckCommand) Run(request CheckRequest) ([]Version, error) {
 	sort.Slice(latestVersions[:], func(i, j int) bool {
 		iID, _ := strconv.Atoi(latestVersions[i].ID)
 		jID, _ := strconv.Atoi(latestVersions[j].ID)
+		if iID == jID {
+			iStatusID, _ := strconv.Atoi(latestVersions[i].StatusID)
+			jStatusID, _ := strconv.Atoi(latestVersions[j].StatusID)
+			return iStatusID < jStatusID
+		}
 		return iID < jID
 	})
 

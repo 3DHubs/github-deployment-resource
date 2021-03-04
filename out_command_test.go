@@ -112,6 +112,7 @@ var _ = Describe("Status Out Command", func() {
 					resource.Version{
 						ID:         "1234",
 						LastStatus: "success",
+						StatusID:   "12",
 					},
 				))
 			})
