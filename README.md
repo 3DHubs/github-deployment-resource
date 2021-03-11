@@ -23,10 +23,10 @@ see the [API documentation](https://developer.github.com/v3/repos/deployments/).
 ``` yaml
 resource_types:
   - name: github-deployment
-    type: docker-image
+    type: registry-image
     source:
-      repository: andyhume/github-deployment-resource
-      tag: "v0.8.0"
+      repository: ghcr.io/3dhubs/github-deployment-resource
+      tag: master
       
 resources:
   - name: deployment
