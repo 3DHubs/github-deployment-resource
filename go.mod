@@ -1,4 +1,4 @@
-module github.com/ahume/github-deployment-resource
+module github.com/3DHubs/github-deployment-resource
 
 go 1.13
 
