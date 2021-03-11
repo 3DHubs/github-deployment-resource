@@ -4,7 +4,7 @@ import (
   "encoding/json"
   "os"
 
-  "github.com/ahume/github-deployment-resource"
+  "github.com/3DHubs/github-deployment-resource"
 )
 
 func main() {

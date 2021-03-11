@@ -9,8 +9,8 @@ import (
 
 	"github.com/google/go-github/v28/github"
 
-	resource "github.com/ahume/github-deployment-resource"
-	"github.com/ahume/github-deployment-resource/fakes"
+	resource "github.com/3DHubs/github-deployment-resource"
+	"github.com/3DHubs/github-deployment-resource/fakes"
 )
 
 var _ = Describe("Status Out Command", func() {

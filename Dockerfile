@@ -9,3 +9,5 @@ RUN go build -o opt/resource/check ./cmd/check && \
 
 FROM gcr.io/distroless/base
 COPY --from=0 /go/src/work/opt/resource /opt/resource
+
+LABEL org.opencontainers.image.source https://github.com/3DHubs/github-deployment-resource
